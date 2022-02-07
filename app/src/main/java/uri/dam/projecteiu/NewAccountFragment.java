@@ -1,58 +1,117 @@
 package uri.dam.projecteiu;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NewAccountFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+
 public class NewAccountFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    NavController navController;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public NewAccountFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NewAccountFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NewAccountFragment newInstance(String param1, String param2) {
-        NewAccountFragment fragment = new NewAccountFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private EditText emailEditText, passwordEditText;
+    private Button registerButton;
+    private FirebaseAuth mAuth;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        navController = Navigation.findNavController(view);  // <-----------------
+
+        emailEditText = view.findViewById(R.id.editTextEmailAddress);
+        passwordEditText = view.findViewById(R.id.editTextPassword);
+        passwordEditText = view.findViewById(R.id.editTextPassword2);
+
+
+        registerButton = view.findViewById(R.id.buttonSignIn);
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                crearCuenta();
+            }
+        });
+
+        mAuth = FirebaseAuth.getInstance();
+
+
+    }
+    private void actualizarUI(FirebaseUser currentUser) {
+        if(currentUser != null){
+            navController.navigate(R.id.profileFragment);
         }
+    }
+
+    private boolean validarFormulario() {
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(emailEditText.getText().toString())) {
+            emailEditText.setError("Required.");
+            valid = false;
+        } else {
+            emailEditText.setError(null);
+        }
+
+        if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
+            passwordEditText.setError("Required.");
+            valid = false;
+        } else {
+            passwordEditText.setError(null);
+        }
+
+        return valid;
+    }
+    private void crearCuenta() {
+        if (!validarFormulario()) {
+            return;
+        }
+
+        registerButton.setEnabled(false);
+
+        mAuth.createUserWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            actualizarUI(mAuth.getCurrentUser());
+                        } else {
+                            Snackbar.make(requireView(), "Error: " + task.getException(), Snackbar.LENGTH_LONG).show();
+
+                        }
+                        registerButton.setEnabled(true);
+                    }
+                });
     }
 
     @Override

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/signInFragment">
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="uri.dam.projecteiu.LogInFragment"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_log_in" />
+<fragment
+        android:id="@+id/signOutFragment"
+        android:name="uri.dam.projecteiu.SignOutFragment"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_log_in" />
+    <fragment
+        android:id="@+id/new_account"
+        android:name="uri.dam.projecteiu.NewAccountFragment"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_new_account" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="uri.dam.projecteiu.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+
+
+</navigation>
