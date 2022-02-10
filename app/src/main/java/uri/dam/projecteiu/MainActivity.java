@@ -32,8 +32,6 @@ import uri.dam.projecteiu.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -47,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseFirestore.getInstance().setFirestoreSettings(new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(false)
                 .build());
+
 
 
 
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(R.id.crearEquipFragment, R.id.crearTorneigFragment, R.id.profileFragment, R.id.signOutFragment)
                 .setOpenableLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_graph);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 

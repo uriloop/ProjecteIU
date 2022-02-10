@@ -44,18 +44,6 @@ public class HomeFragment extends Fragment {
 
         navController = Navigation.findNavController(view);  // <-----------------
 
-/*  Aixó porta a new post amb el nav controler quan es clica al floating button
-
-
-        view.findViewById(R.id.gototorneigs).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.NewPostFragment);
-            }
-        });
-*/
-
-
         RecyclerView postsRecyclerView = view.findViewById(R.id.postsRecyclerView);
 
         Query query = FirebaseFirestore.getInstance().collection("posts").limit(50).orderBy("timestamp");
